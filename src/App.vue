@@ -1,10 +1,21 @@
+<template>
+<BaiCanvas :bai-img-src-list="baiImgSrcList" 
+    center-img-src="/src/assets/SorakadoAi.jpg"></BaiCanvas>
+</template>
+
 <script setup>
 import BaiCanvas from './components/BaiCanvas.vue';
-</script>
 
-<template>
-<BaiCanvas></BaiCanvas>
-</template>
+const baiImgSrcList = [
+    '/src/assets/SorakadoAi.jpg',
+    '/src/assets/SorakadoAi.jpg',
+    '/src/assets/SorakadoAi.jpg',
+    '/src/assets/SorakadoAi.jpg',
+    '/src/assets/SorakadoAi.jpg',
+    '/src/assets/SorakadoAi.jpg',
+    '/src/assets/SorakadoAi.jpg'
+]
+</script>
 
 <style>
 #app {
@@ -14,5 +25,8 @@ import BaiCanvas from './components/BaiCanvas.vue';
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
+}
+body {
+    background-color: black;
 }
 </style>

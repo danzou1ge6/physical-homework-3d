@@ -8,15 +8,14 @@
 
 <script setup>
 import { computed } from '@vue/reactivity';
-import { inject, onMounted, ref } from 'vue';
-import { Vector3d } from '../lib/linalg';
+import { inject, onMounted, ref, unref } from 'vue';
 
 // Initial Position and Velocity
 const props = defineProps({
     runPhysics: Boolean,
+    drawPathPoints: Number,
     params: Object
 })
-
 let params = props.params
 // initialPos: Vector3d,
 // initialVelocity: Vector3d,
@@ -66,11 +65,11 @@ const windowPos = computed(() => {
 // Size on the Window
 const windowDisplayedWidth = computed(() =>
     Math.floor(
-        params.objectWidth * viewPointDistanceToWindow.value / viewPointPos.value.z)
+        unref(params.objectWidth) * viewPointDistanceToWindow.value / viewPointPos.value.z)
     )
 const windowDisplayedHeight = computed(() =>
     Math.floor(
-        params.objectHeight * viewPointDistanceToWindow.value / viewPointPos.value.z)
+        unref(params.objectHeight) * viewPointDistanceToWindow.value / viewPointPos.value.z)
     )
 
 // Rotation in Universal Cordinate System
@@ -132,26 +131,31 @@ function rotateBaiObj(deltaT) {
 // Render Bai
 const baiObjStyle = ref('')
 function renderBai() {
-    // Format Rotation Data
-    let {windowRotationAxis1, windowRotationRad1,
-         windowRotationAxis2, windowRotationRad2} = calcWindowRotationData()
-    let ra1x = windowRotationAxis1.x
-    let ra1y = windowRotationAxis1.y
-    let ra1z = windowRotationAxis1.z
-    let ra2x = windowRotationAxis2.x
-    let ra2y = windowRotationAxis2.y
-    let ra2z = windowRotationAxis2.z
-    let rdeg1 = windowRotationRad1 / Math.PI * 180
-    let rdeg2 = windowRotationRad2 / Math.PI * 180
-    // Build CSS String
-    baiObjStyle.value = `
-        left: ${windowPos.value.x - windowDisplayedWidth.value / 2}px;
-        top: ${windowPos.value.y -  windowDisplayedHeight.value / 2}px;
-        width: ${windowDisplayedWidth.value}px;
-        height: ${windowDisplayedHeight.value}px;
-        transform: rotate3d(${ra1x}, ${ra1y}, ${ra1z}, ${rdeg1}deg)
-                   rotate3d(${ra2x}, ${ra2y}, ${ra2z}, ${rdeg2}deg);
-    `
+    // Does not Render When Behind the Window
+    if(viewPointPos.value.z <= 0){
+        baiObjStyle.value = 'display: none'
+    }else{
+        // Format Rotation Data
+        let {windowRotationAxis1, windowRotationRad1,
+            windowRotationAxis2, windowRotationRad2} = calcWindowRotationData()
+        let ra1x = windowRotationAxis1.x
+        let ra1y = windowRotationAxis1.y
+        let ra1z = windowRotationAxis1.z
+        let ra2x = windowRotationAxis2.x
+        let ra2y = windowRotationAxis2.y
+        let ra2z = windowRotationAxis2.z
+        let rdeg1 = windowRotationRad1 / Math.PI * 180
+        let rdeg2 = windowRotationRad2 / Math.PI * 180
+        // Build CSS String
+        baiObjStyle.value = `
+            left: ${windowPos.value.x - windowDisplayedWidth.value / 2}px;
+            top: ${windowPos.value.y -  windowDisplayedHeight.value / 2}px;
+            width: ${windowDisplayedWidth.value}px;
+            height: ${windowDisplayedHeight.value}px;
+            transform: rotate3d(${ra1x}, ${ra1y}, ${ra1z}, ${rdeg1}deg)
+                    rotate3d(${ra2x}, ${ra2y}, ${ra2z}, ${rdeg2}deg);
+        `
+    }
 }
 
 // Animation Loop
@@ -164,13 +168,15 @@ function animationLoop(timestamp) {
             updatePhysics(deltaT)
         }
 
-        rotateBaiObj(deltaT)
+        if(params.rotationAngularSpeed){
+            rotateBaiObj(deltaT)
+        }
 
         renderBai()
+        
     }
     timestampOfLastFrame = timestamp
-    
-    
+
     requestAnimationFrame(animationLoop)
 }
 
