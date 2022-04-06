@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from 'vue';
+import { defineProps, defineEmits, ref, onMounted } from 'vue';
 
 const props = defineProps({modelValue: Boolean})
 const emit = defineEmits(['update:modelValue'])
@@ -23,6 +23,10 @@ function toggle() {
         className.value = 'checked'
     }
 }
+
+onMounted(() => {
+    className.value = props.modelValue ? 'checked' : 'unchecked'
+})
 
 </script>
 
@@ -43,7 +47,6 @@ span:hover {
     cursor: pointer;
 }
 span.unchecked:hover {
-    display: inline;
     background-color: aliceblue;
     color: black;
 }

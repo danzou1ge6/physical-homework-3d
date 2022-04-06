@@ -1,7 +1,9 @@
 <template>
+    <span>[</span>
     <input :placeholder="props.modelValue.x" v-model="mx"><span>,</span>
     <input :placeholder="props.modelValue.y" v-model="my"><span>,</span>
     <input :placeholder="props.modelValue.z" v-model="mz">
+    <span>]</span>
     <button @click="submit">Submit</button>
 </template>
 

@@ -8,6 +8,9 @@
 </div>
 <Teleport to="body">
     <div class="param-editor" v-if="props.showEdit">
+        <CustomCheckbox v-model="runPhysics">
+            Run Physics
+        </CustomCheckbox><br>
         <span>Position=</span>
         <VectorInput v-model="universePos"></VectorInput><br>
         <span>Velocity=</span>
@@ -32,6 +35,7 @@ import { computed } from '@vue/reactivity';
 import { inject, onMounted, ref, unref } from 'vue';
 
 import VectorInput from './VectorInput.vue'
+import CustomCheckbox from './CustomCheckbox.vue'
 
 // Initial Position and Velocity
 const props = defineProps({
@@ -133,6 +137,8 @@ function calcWindowRotationData() {
 }
 
 // Calculate Velocity and Position
+const runPhysics = ref(props.runPhysics)
+
 const gravityConstant = inject('gravityConstant')
 function updatePhysics(deltaT) {
     universeVelocity.value = universeVelocity.value.minus(
@@ -200,7 +206,7 @@ function animationLoop(timestamp) {
     if(timestampOfLastFrame){
         let deltaT = timestamp - timestampOfLastFrame
 
-        if(props.runPhysics){
+        if(runPhysics.value){
             updatePhysics(deltaT)
         }
 
