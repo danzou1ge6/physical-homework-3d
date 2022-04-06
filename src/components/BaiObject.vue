@@ -4,17 +4,41 @@
 
     </slot>
 </div>
+<Teleport to="body">
+    <div class="param-editor" v-if="props.showEdit">
+        <span>Position=</span>
+        <VectorInput v-model="universePos"></VectorInput><br>
+        <span>Velocity=</span>
+        <VectorInput v-model="universeVelocity"></VectorInput><br>
+        <span>DirectionX=</span>
+        <VectorInput v-model="directionX"></VectorInput><br>
+        <span>DirectionY=</span>
+        <VectorInput v-model="directionY"></VectorInput><br>
+        <span>RotationAxis=</span>
+        <VectorInput v-model="rotationAxis"></VectorInput><br>
+        <span>RotationAngularSpeed=</span>
+        <input v-model="rotationAngularSpeed">
+    </div>
+    <div class="bai-object-preview" v-if="props.showEdit">
+        <slot>
+            
+        </slot>
+    </div>
+</Teleport>
 </template>
 
 <script setup>
 import { computed } from '@vue/reactivity';
 import { inject, onMounted, ref, unref } from 'vue';
 
+import VectorInput from './VectorInput.vue'
+
 // Initial Position and Velocity
 const props = defineProps({
     runPhysics: Boolean,
     drawPathPoints: Number,
-    params: Object
+    params: Object,
+    showEdit: Boolean
 })
 let params = props.params
 // initialPos: Vector3d,
@@ -121,14 +145,17 @@ function updatePhysics(deltaT) {
 }
 
 // Apply Rotation
+const rotationAxis = ref(params.rotationAxis)
+const rotationAngularSpeed = ref(params.rotationAngularSpeed)
+
 function rotateBaiObj(deltaT) {
     directionX.value = directionX.value.rotate(
-        params.rotationAxis,
-        params.rotationAngularSpeed * deltaT
+        rotationAxis.value,
+        rotationAngularSpeed.value * deltaT
     )
     directionY.value = directionY.value.rotate(
-        params.rotationAxis,
-        params.rotationAngularSpeed * deltaT
+        rotationAxis.value,
+        rotationAngularSpeed.value * deltaT
     )
 }
 
@@ -161,6 +188,9 @@ function renderBai() {
                     rotate3d(${ra2x}, ${ra2y}, ${ra2z}, ${-rdeg2}deg)
                     rotate3d(${ra1x}, ${ra1y}, ${ra1z}, ${-rdeg1}deg);
         `
+        if(props.showEdit){
+            baiObjStyle.value += 'border: solid red 3px;'
+        }
     }
 }
 
@@ -194,5 +224,20 @@ onMounted(() => {animationLoop()})
 <style scoped>
 .bai-object {
     position: fixed
+}
+.param-editor {
+    border: solid aliceblue 1px;
+    display: inline-block;
+}
+.bai-object-preview {
+    max-width: 100px;
+    max-height: 100px;
+}
+.bai-object-preview:hover {
+    max-width: 80%;
+    max-height: 80vh;
+    position: fixed;
+    left: 10px;
+    top: 10px
 }
 </style>

@@ -1,19 +1,33 @@
 <template>
 <div class="constant-inp">
+    <label>Show Axis</label>
+    <input type="checkbox" v-model="showUniverseAxis">
+    <br>
     <span>GravityConstant=</span><input v-model="gravityConstant">
+</div>
+<div class="param-edit-container">
+    <select v-model="selectedParamEdit">
+        <option value="-2">Select Bai Object to Edit Param</option>
+        <option value="-1">Center</option>
+        <option v-for="(_, i) in baiParams" :key="i" :value="i">
+            Bai Object {{ i }}
+        </option>
+    </select>
 </div>
 <p class="viewpoint-pos-disp">
     Pitch: {{ (viewPointPitch / Math.PI).toFixed(3) }} PI<br>
     Yaw: {{ (viewPointYaw / Math.PI).toFixed(3) }} PI<br>
     Radius: {{ viewPointRadius }} px
 </p>
-<BaiObject :params="centerBaiParams" :run-physics="false">
+<BaiObject :params="centerBaiParams" :run-physics="false"
+    :show-edit="selectedParamEdit == -1">
     <a :href="props.centerImgSrc" target="_blank">
         <img :src="props.centerImgSrc">
     </a>
 </BaiObject>
 <div v-for="(baiParam,i) in baiParams" :key="i">
-    <BaiObject :params="baiParam" :run-physics="true">
+    <BaiObject :params="baiParam" :run-physics="true"
+        :show-edit="i == selectedParamEdit">
         <template #default>
             <a :href="props.baiImgSrcList[i]" target="_blank">
                 <img :src="props.baiImgSrcList[i]">
@@ -21,7 +35,8 @@
         </template>
     </BaiObject>
 </div>
-<canvas ref="cordCanvas" :width="windowWidth" :height="windowHeight"></canvas>
+<canvas ref="cordCanvas" :width="windowWidth" :height="windowHeight"
+    v-if="showUniverseAxis"></canvas>
 </template>
 
 <script setup>
@@ -45,8 +60,7 @@ import BaiObject from './BaiObject.vue'
 
 const props = defineProps([
     'baiImgSrcList',
-    'centerImgSrc',
-    'showAxis'
+    'centerImgSrc'
 ])
 
 
@@ -147,6 +161,8 @@ const centerBaiParams = computed(() => {
 })
 
 // Draw Cordinate System on Canvas
+const showUniverseAxis = ref(true)
+
 const cordCanvas = ref(null)
 
 function universePosToWindow(universePos) {
@@ -188,16 +204,20 @@ function drawUniverseBasisAxis() {
 
 }
 
+// Edit Bai Object Param
+const selectedParamEdit = ref(-1)
+
 // Run Animation
 function animationLoop() {
-    drawUniverseBasisAxis()
+    if(showUniverseAxis.value){
+        drawUniverseBasisAxis()
+    }
 
     requestAnimationFrame(animationLoop)
 }
 
-if(props.showAxis){
-    onMounted(() => {animationLoop()})
-}
+onMounted(() => {animationLoop()})
+
 
 </script>
 
@@ -209,7 +229,6 @@ img {
 }
 p.viewpoint-pos-disp {
     position: fixed;
-    color: aliceblue;
     text-align: center;
     right: 0px;
     top: 0px;
@@ -223,15 +242,5 @@ canvas {
     width: 100%;
     height: 100vh;
     z-index: -1;
-}
-.constant-inp {
-    z-index: 99;
-    position: relative;
-    color: aliceblue
-}
-.constant-inp input{
-    background-color: rgba(0,0,0,0);
-    color: aliceblue;
-    border: none;
 }
 </style>

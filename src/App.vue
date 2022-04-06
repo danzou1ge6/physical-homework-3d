@@ -1,19 +1,13 @@
 <template>
 <h1>汝可识得此阵？</h1>
-<BaiCanvas :bai-img-src-list="baiImgSrcList" 
-    center-img-src="/SorakadoAi.jpg"
-    show-axis="true"></BaiCanvas>
+<BaiCanvas :bai-img-src-list="baiImgSrcList"
+    center-img-src="/SorakadoAi.jpg"></BaiCanvas>
 </template>
 
 <script setup>
 import BaiCanvas from './components/BaiCanvas.vue';
 
 const baiImgSrcList = [
-    '/SorakadoAi.jpg',
-    '/SorakadoAi.jpg',
-    '/SorakadoAi.jpg',
-    '/SorakadoAi.jpg',
-    '/SorakadoAi.jpg',
     '/SorakadoAi.jpg',
     '/SorakadoAi.jpg',
 ]
@@ -32,5 +26,33 @@ h1 {
 }
 body {
     background-color: black;
+}
+span {
+    color: aliceblue;
+}
+p {
+    color: aliceblue;
+}
+input{
+    background-color: rgba(0,0,0,0);
+    color: aliceblue;
+    border: none;
+}
+label {
+    color: aliceblue;
+}
+button{
+    border: none;
+    background-color: rgba(0,0,0,0);
+    color: aliceblue;
+}
+button:hover{
+    background-color: aliceblue;
+    color: black;
+}
+select {
+    border: solid aliceblue 1px;
+    background-color: rgba(0,0,0,0);
+    color: aliceblue;
 }
 </style>
