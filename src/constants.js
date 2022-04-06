@@ -12,4 +12,4 @@ export const tanVelocityFromRadius = 0.5
 export const minSpeed = 10
 export const minRotationAngularSpeed = 0
 export const maxRotationAngularSpeed = 0.01
-export const imgSize = 400
+export const imgSize = 800

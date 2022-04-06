@@ -13,7 +13,7 @@ export function useTrackMouseSwipe(updateAngle) {
         if(event.buttons == 1){  // Left Click
             updateAngle({
                 deltaPitch: mouseMoveSensitivity * event.movementY,
-                deltaYaw: mouseMoveSensitivity * event.movementX
+                deltaYaw: -mouseMoveSensitivity * event.movementX
             })
         }
     }

@@ -99,6 +99,10 @@ function calcWindowRotationData() {
         Math.acos(rotated1ViewPointDirectionY.dot(directionY.value))
         * Math.sign(rotated1ViewPointDirectionY
                         .cross(windowRotationAxis2).dot(directionY.value))
+    
+    // So They Have to Be Transformed into ViewPoint Cordinate System
+    windowRotationAxis1 = universeToViewPointTransform.value.dotVec(windowRotationAxis1)
+    windowRotationAxis2 = universeToViewPointTransform.value.dotVec(windowRotationAxis2)
 
     return {windowRotationAxis1, windowRotationRad1,
             windowRotationAxis2, windowRotationRad2}
@@ -147,13 +151,15 @@ function renderBai() {
         let rdeg1 = windowRotationRad1 / Math.PI * 180
         let rdeg2 = windowRotationRad2 / Math.PI * 180
         // Build CSS String
+        // Transform is Executed From Right to Left. Damn It!
         baiObjStyle.value = `
             left: ${windowPos.value.x - windowDisplayedWidth.value / 2}px;
             top: ${windowPos.value.y -  windowDisplayedHeight.value / 2}px;
             width: ${windowDisplayedWidth.value}px;
             height: ${windowDisplayedHeight.value}px;
-            transform: rotate3d(${ra1x}, ${ra1y}, ${ra1z}, ${rdeg1}deg)
-                    rotate3d(${ra2x}, ${ra2y}, ${ra2z}, ${rdeg2}deg);
+            transform: 
+                    rotate3d(${ra2x}, ${ra2y}, ${ra2z}, ${-rdeg2}deg)
+                    rotate3d(${ra1x}, ${ra1y}, ${ra1z}, ${-rdeg1}deg);
         `
     }
 }
