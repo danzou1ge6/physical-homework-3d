@@ -1,0 +1,18 @@
+{
+    "sorakado-ai": {
+        "center": "/SorakadoAi.jpg",
+        "outer": [
+            "/SorakadoAi.jpg",
+            "/SorakadoAi.jpg"
+        ]
+    },
+    "default": {
+        "center": "/SorakadoAi.jpg",
+        "outer": [
+            "/SorakadoAi.jpg",
+            "/SorakadoAi.jpg",
+            "/SorakadoAi.jpg",
+            "/SorakadoAi.jpg"
+        ]
+    }
+}
