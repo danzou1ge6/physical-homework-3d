@@ -162,7 +162,7 @@ function universePosToWindow(universePos) {
 }
 
 function drawUniverseBasisAxis() {
-    if(cordCanvas){
+    if(cordCanvas.value){
         let cordCanvasContext = cordCanvas.value.getContext('2d')
 
         // Clear Canvas
