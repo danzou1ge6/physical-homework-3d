@@ -142,7 +142,7 @@ const centerBaiParams = computed(() => {
     initialDirectionX: new Vector3d([1, 0, 0]),
     initialDirectionY: new Vector3d([0, 1, 0]),
     rotationAxis: new Vector3d([0, 0, 1]),
-    rotationAngularSpeed: 0.00
+    rotationAngularSpeed: 0.001
     }
 })
 
@@ -170,8 +170,9 @@ function drawUniverseBasisAxis() {
 
         let centerWindowPos = universePosToWindow(new Vector3d([0, 0, 0]));
 
+        let label = ['X', 'Y', 'Z'];
         [universeBasisX, universeBasisY, universeBasisZ]
-        .forEach(basis => {
+        .forEach((basis, i) => {
             let draw = universePosToWindow(basis.value.scale(2 * imgSize))
             
             cordCanvasContext.beginPath()
@@ -180,6 +181,8 @@ function drawUniverseBasisAxis() {
             cordCanvasContext.lineTo(draw.x, draw.y)
             cordCanvasContext.closePath()
             cordCanvasContext.stroke()
+
+            cordCanvasContext.strokeText(label[i], draw.x, draw.y)
         })
     }
 

@@ -1,7 +1,7 @@
 <template>
 <h1>汝可识得此阵？</h1>
 <BaiCanvas :bai-img-src-list="baiImgSrcList" 
-    center-img-src="/src/assets/SorakadoAi.jpg"
+    center-img-src="/SorakadoAi.jpg"
     show-axis="true"></BaiCanvas>
 </template>
 
@@ -9,13 +9,13 @@
 import BaiCanvas from './components/BaiCanvas.vue';
 
 const baiImgSrcList = [
-    '/src/assets/SorakadoAi.jpg',
-    '/src/assets/SorakadoAi.jpg',
-    '/src/assets/SorakadoAi.jpg',
-    '/src/assets/SorakadoAi.jpg',
-    '/src/assets/SorakadoAi.jpg',
-    '/src/assets/SorakadoAi.jpg',
-    '/src/assets/SorakadoAi.jpg'
+    '/SorakadoAi.jpg',
+    '/SorakadoAi.jpg',
+    '/SorakadoAi.jpg',
+    '/SorakadoAi.jpg',
+    '/SorakadoAi.jpg',
+    '/SorakadoAi.jpg',
+    '/SorakadoAi.jpg',
 ]
 </script>
 
