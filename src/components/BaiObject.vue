@@ -1,8 +1,10 @@
 <template>
 <div class="bai-object" :style="baiObjStyle">
-    <slot>
-
-    </slot>
+    <div :style="props.showEdit ? 'border: solid red 3px;' : ''">
+        <div :style="rotateStyle">
+            <slot></slot>
+        </div>
+    </div>
 </div>
 <Teleport to="body">
     <div class="param-editor" v-if="props.showEdit">
@@ -11,18 +13,16 @@
         <span>Velocity=</span>
         <VectorInput v-model="universeVelocity"></VectorInput><br>
         <span>DirectionX=</span>
-        <VectorInput v-model="directionX"></VectorInput><br>
+        <VectorInput v-model="directionX" normalized="true"></VectorInput><br>
         <span>DirectionY=</span>
-        <VectorInput v-model="directionY"></VectorInput><br>
+        <VectorInput v-model="directionY" normalized="true"></VectorInput><br>
         <span>RotationAxis=</span>
-        <VectorInput v-model="rotationAxis"></VectorInput><br>
+        <VectorInput v-model="rotationAxis" normalized="true"></VectorInput><br>
         <span>RotationAngularSpeed=</span>
         <input v-model="rotationAngularSpeed">
     </div>
     <div class="bai-object-preview" v-if="props.showEdit">
-        <slot>
-            
-        </slot>
+        <slot></slot>
     </div>
 </Teleport>
 </template>
@@ -161,6 +161,7 @@ function rotateBaiObj(deltaT) {
 
 // Render Bai
 const baiObjStyle = ref('')
+const rotateStyle = ref('')
 function renderBai() {
     // Does not Render When Behind the Window
     if(viewPointPos.value.z <= 0){
@@ -184,13 +185,12 @@ function renderBai() {
             top: ${windowPos.value.y -  windowDisplayedHeight.value / 2}px;
             width: ${windowDisplayedWidth.value}px;
             height: ${windowDisplayedHeight.value}px;
+        `
+        rotateStyle.value = `
             transform: 
                     rotate3d(${ra2x}, ${ra2y}, ${ra2z}, ${-rdeg2}deg)
                     rotate3d(${ra1x}, ${ra1y}, ${ra1z}, ${-rdeg1}deg);
         `
-        if(props.showEdit){
-            baiObjStyle.value += 'border: solid red 3px;'
-        }
     }
 }
 

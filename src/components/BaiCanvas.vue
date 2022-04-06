@@ -1,26 +1,31 @@
 <template>
-<div class="constant-inp">
-    <label>Show Axis</label>
-    <input type="checkbox" v-model="showUniverseAxis">
+<div>
+    <CustomCheckbox type="checkbox" v-model="showUniverseAxis">
+        Show Axis
+    </CustomCheckbox>
+    <br>
+    <CustomCheckbox v-model="showViewPointPos">
+        Show View Point Position
+    </CustomCheckbox>
     <br>
     <span>GravityConstant=</span><input v-model="gravityConstant">
 </div>
 <div class="param-edit-container">
     <select v-model="selectedParamEdit">
-        <option value="-2">Select Bai Object to Edit Param</option>
-        <option value="-1">Center</option>
+        <option value="-1">Select Bai Object to Edit Param</option>
+        <option value="-2">Center</option>
         <option v-for="(_, i) in baiParams" :key="i" :value="i">
             Bai Object {{ i }}
         </option>
     </select>
 </div>
-<p class="viewpoint-pos-disp">
+<p class="viewpoint-pos-disp" v-if="showViewPointPos">
     Pitch: {{ (viewPointPitch / Math.PI).toFixed(3) }} PI<br>
     Yaw: {{ (viewPointYaw / Math.PI).toFixed(3) }} PI<br>
     Radius: {{ viewPointRadius }} px
 </p>
 <BaiObject :params="centerBaiParams" :run-physics="false"
-    :show-edit="selectedParamEdit == -1">
+    :show-edit="selectedParamEdit == -2">
     <a :href="props.centerImgSrc" target="_blank">
         <img :src="props.centerImgSrc">
     </a>
@@ -56,13 +61,15 @@ initialViewPointYaw} from '../constants.js';
 import { randomParam } from '../lib/paramGeneration.js'
 
 import BaiObject from './BaiObject.vue'
-
+import CustomCheckbox from './CustomCheckbox.vue';
 
 const props = defineProps([
     'baiImgSrcList',
     'centerImgSrc'
 ])
 
+// Show View Point Pos
+const showViewPointPos = ref(true)
 
 // Basis for Universal Cordinate System
 const universeBasisX = ref(new Vector3d([1, 0, 0]))
