@@ -219,6 +219,7 @@ canvas {
     position: fixed;
     width: 100%;
     height: 100vh;
+    z-index: -1;
 }
 .constant-inp {
     z-index: 99;
