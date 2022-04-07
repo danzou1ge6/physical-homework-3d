@@ -18,7 +18,7 @@ import { ref } from 'vue';
 import BaiCanvas from './components/BaiCanvas.vue';
 import IndexDisplay from './components/IndexDisplay.vue';
 
-import displayIndex from './displayIndex.js'
+import displayIndex from './assets/displayIndex.js'
 
 const baiImgSrcList = ref([])
 const centerImgSrc = ref('')

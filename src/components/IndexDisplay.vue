@@ -3,7 +3,8 @@
     <h2>{{ msg }}</h2>
     <ul>
         <li v-for="key in Object.keys(index)" :key="key">
-            <a class="link" :href="'/#' + key" target="_blank">
+            <a class="link" :href="`${BASE_URL}#${key}`" 
+                target="_blank">
                 {{ key }}
             </a><br>
             <div class="further-info">
@@ -20,9 +21,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
 const props = defineProps(['index', 'msg'])
+
+const BASE_URL = import.meta.env.BASE_URL
 
 </script>
 
