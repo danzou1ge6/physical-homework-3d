@@ -9,7 +9,7 @@ export const generationConstants = {
     minObjRadius: 3000,
     maxObjRadius: 8000,
     tanVelocityFromRadius: 0.1,
-    minSpeed: 1,
+    minSpeed: 1.8,
     maxSpeed: 2,
     minRotationAngularSpeed: 0,
     maxRotationAngularSpeed: 0.01,

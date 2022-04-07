@@ -15,6 +15,9 @@ const emit = defineEmits(['generate'])
 const setting = ref(props.generationConstants)
 
 function submit() {
+    Object.keys(setting.value).forEach(k => {
+        setting.value[k] = Number(setting.value[k])
+    })
     emit('generate', setting.value)
 }
 
