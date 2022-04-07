@@ -1,7 +1,7 @@
 <template>
 <h1>汝可识得此阵？</h1>
 <div>
-    <CustomCheckbox type="checkbox" v-model="showUniverseAxis">
+    <CustomCheckbox v-model="showUniverseAxis">
         Show Axis
     </CustomCheckbox>
     <br>
@@ -9,7 +9,19 @@
         Show View Point Position
     </CustomCheckbox>
     <br>
-    <span>GravityConstant=</span><input v-model="gravityConstant">
+    <span>gravityConstant=</span><input v-model="gravityConstant">
+    <br>
+    <span>viewPointDistanceToWindow=</span><input v-model="viewPointDistanceToWindow">
+    <br>
+    <CustomCheckbox v-model="showGnerationPanel">
+        Generate Param for Selected Bai Object
+    </CustomCheckbox>
+    <br>
+    <div v-if="showGnerationPanel" class="generation-panel">
+        <ParamGenerationSetting :generation-constants="generationConstants"
+            @generate="generateParams">
+        </ParamGenerationSetting>
+    </div>
 </div>
 <div class="param-edit-container">
     <select v-model="selectedParamEdit">
@@ -31,7 +43,7 @@
         <img :src="props.centerImgSrc">
     </a>
 </BaiObject>
-<div v-for="(baiParam,i) in baiParams" :key="i">
+<div v-for="(baiParam,i) in baiParams" :key="baiObjKey[i]">
     <BaiObject :params="baiParam" :run-physics="true"
         :show-edit="i == selectedParamEdit">
         <template #default>
@@ -55,14 +67,15 @@ import { useTrackMouseSwipe } from '../lib/mouseSwipe.js'
 import { useTrackMouseScroll } from '../lib/mouseScroll.js'
 import { defaultGravityConstant,
          defaultViewPointDistanceToWindow, 
+generationConstants, 
 initialViewPointPitch, 
 initialViewPointRadius,
-imgSize,
 initialViewPointYaw} from '../constants.js';
-import { randomParam } from '../lib/paramGeneration.js'
+import { randomParam, RandomParamGenerator } from '../lib/paramGeneration.js'
 
 import BaiObject from './BaiObject.vue'
 import CustomCheckbox from './CustomCheckbox.vue';
+import ParamGenerationSetting from './ParamGenerationSetting.vue';
 
 const props = defineProps([
     'baiImgSrcList',
@@ -156,15 +169,38 @@ provide('gravityConstant', gravityConstant)
 // BaiObject Params
 const baiParams = ref([])
 props.baiImgSrcList.forEach(_ => {
-    baiParams.value.push(randomParam(imgSize, imgSize))
+    baiParams.value.push(randomParam())
 })
+
+// Force Refresh a Bai Object: Vue Renders Compoenent on Key Change
+const baiObjKey = ref(props.baiImgSrcList.map(_ => 
+    Math.floor(Math.random() * 100000000)))
+function refreshBaiObj(i) {
+    baiObjKey.value[i] = Math.floor(Math.random() * 100000000)
+}
+
+const showGnerationPanel = ref(false)
+function generateParams (setting) {
+    let generator = new RandomParamGenerator(setting)
+    if(selectedParamEdit.value >= 0){
+        baiParams.value[selectedParamEdit.value] = 
+           generator.randomParam()
+        refreshBaiObj(selectedParamEdit.value)
+    }else if(selectedParamEdit.value == -1) {
+        // All
+        baiParams.value.forEach((_, i) => {
+            baiParams.value[i] = generator.randomParam()
+            refreshBaiObj(i)
+        })
+    }
+}
 
 // BaiObject Para for Center Object
 const centerBaiParams = ref({
     initialPos: new Vector3d([0, 0, 0]),
     initialVelocity: new Vector3d([0, 0, 0]),
-    objectWidth: imgSize,
-    objectHeight: imgSize,
+    objectWidth: generationConstants.imgSize,
+    objectHeight: generationConstants.imgSize,
     initialDirectionX: new Vector3d([1, 0, 0]),
     initialDirectionY: new Vector3d([0, 1, 0]),
     rotationAxis: new Vector3d([0, 0, 1]),
@@ -200,7 +236,7 @@ function drawUniverseBasisAxis() {
         let label = ['X', 'Y', 'Z'];
         [universeBasisX, universeBasisY, universeBasisZ]
         .forEach((basis, i) => {
-            let draw = universePosToWindow(basis.value.scale(2 * imgSize))
+            let draw = universePosToWindow(basis.value.scale(2 * generationConstants.imgSize))
             
             cordCanvasContext.beginPath()
             cordCanvasContext.strokeStyle = "rgb(255,255,255)"
@@ -253,5 +289,9 @@ canvas {
     width: 100%;
     height: 100vh;
     z-index: -1;
+}
+.generation-panel {
+    border: solid aliceblue 1px;
+    display: inline-block;
 }
 </style>

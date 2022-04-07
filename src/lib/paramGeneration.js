@@ -1,7 +1,4 @@
-import { minObjRadius, minSpeed, tanVelocityFromRadius,
-         defaultGravityConstant, 
-         minRotationAngularSpeed,
-         maxRotationAngularSpeed} from "../constants.js";
+import { generationConstants } from "../constants.js";
 import { Vector3d } from './linalg.js'
 
 function randomNumber(min, max) {
@@ -19,41 +16,60 @@ function randomUnitVector3d() {
     ])
 }
 
-function randomPosition() {
-    let radius = randomNumber(minObjRadius, minObjRadius)
-    return randomUnitVector3d().scale(radius)
-}
 
-// params:
-//     r: Vector3d
-//     gracityConstant: Number
-function randomVelocity(r) {
-    let m = randomUnitVector3d()
-    let n = m.cross(r).normalized()
-    let a = randomNumber(-tanVelocityFromRadius, tanVelocityFromRadius)
-    let v = n.add(r.normalized().scale(a))
+class RandomParamGenerator {
+    constructor(setting) {
+        this.setting = setting
+    }
+    
+    randomPosition() {
+        let radius = randomNumber(
+            this.setting.minObjRadius,
+            this.setting.minObjRadius)
+        return randomUnitVector3d().scale(radius)
+    }
 
-    // the Miniumal Speed Required to Escape From Position `r`
-    let escapeSpeed = Math.sqrt(2 * defaultGravityConstant / r.norm())
+    // params:
+    //     r: Vector3d
+    //     gracityConstant: Number
+    randomVelocity(r) {
+        let m = randomUnitVector3d()
+        let n = m.cross(r).normalized()
+        let a = randomNumber(
+            -this.setting.tanVelocityFromRadius,
+            this.setting.tanVelocityFromRadius)
+        let v = n.add(r.normalized().scale(a))
 
-    return v.scale(randomNumber(minSpeed, escapeSpeed))
-}
+        return v.scale(randomNumber(
+            this.setting.minSpeed,
+            this.setting.maxSpeed))
+    }
 
-function randomParam(width, height) {
-    let pos = randomPosition()
-    let v = randomVelocity(pos)
-    let dirX = randomUnitVector3d()
-    let dirY = randomUnitVector3d().cross(dirX).normalized()
-    return {
-        initialPos: pos,
-        initialVelocity: v,
-        initialDirectionX: dirX,
-        initialDirectionY: dirY,
-        rotationAxis: randomUnitVector3d(),
-        rotationAngularSpeed: randomNumber(minRotationAngularSpeed, maxRotationAngularSpeed),
-        objectWidth: width,
-        objectHeight: height
+    randomParam() {
+        let pos = this.randomPosition()
+        let v = this.randomVelocity(pos)
+        let dirX = randomUnitVector3d()
+        let dirY = randomUnitVector3d().cross(dirX).normalized()
+        return {
+            initialPos: pos,
+            initialVelocity: v,
+            initialDirectionX: dirX,
+            initialDirectionY: dirY,
+            rotationAxis: randomUnitVector3d(),
+            rotationAngularSpeed: randomNumber(
+                this.setting.minRotationAngularSpeed,
+                this.setting.maxRotationAngularSpeed
+            ),
+            objectWidth: this.setting.imgSize,
+            objectHeight: this.setting.imgSize
+        }
     }
 }
 
-export {randomPosition, randomVelocity, randomParam, randomNumber}
+function randomParam() {
+    return new RandomParamGenerator(generationConstants)
+            .randomParam()
+}
+
+
+export {randomParam, randomNumber, RandomParamGenerator}

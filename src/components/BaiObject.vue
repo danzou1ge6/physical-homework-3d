@@ -12,18 +12,22 @@
         <CustomCheckbox v-model="runPhysics">
             Run Physics
         </CustomCheckbox><br>
-        <span>Position=</span>
+        <span>position=</span>
         <VectorInput v-model="universePos"></VectorInput><br>
-        <span>Velocity=</span>
+        <span>velocity=</span>
         <VectorInput v-model="universeVelocity"></VectorInput><br>
-        <span>DirectionX=</span>
+        <span>directionX=</span>
         <VectorInput v-model="directionX" normalized></VectorInput><br>
-        <span>DirectionY=</span>
+        <span>directionY=</span>
         <VectorInput v-model="directionY" normalized></VectorInput><br>
-        <span>RotationAxis=</span>
+        <span>rotationAxis=</span>
         <VectorInput v-model="rotationAxis" normalized></VectorInput><br>
-        <span>RotationAngularSpeed=</span>
-        <input v-model="rotationAngularSpeed">
+        <span>rotationAngularSpeed=</span>
+        <input v-model="rotationAngularSpeed"><br>
+        <span>width=</span>
+        <input v-model="objectWidth"><br>
+        <span>height=</span>
+        <input v-model="objectHeight">
     </div>
     <div class="bai-object-preview" v-if="props.showEdit">
         <slot></slot>
@@ -59,10 +63,6 @@ let params = props.params
 const universePos = ref(params.initialPos)
 const universeVelocity = ref(params.initialVelocity)
 
-// Basis for Universal Cordinate System
-const universeBasisX = inject('universeBasisX')
-const universeBasisY = inject('universeBasisY')
-const universeBasisZ = inject('universeBasisZ')
 
 // Cordinate Transformation from Universal to ViewPoint
 const universeToViewPointTransform = inject('universeToViewPointTransform')
@@ -92,13 +92,16 @@ const windowPos = computed(() => {
 })
 
 // Size on the Window
+const objectWidth = ref(params.objectWidth)
+const objectHeight = ref(params.objectHeight)
+
 const windowDisplayedWidth = computed(() =>
     Math.floor(
-        unref(params.objectWidth) * viewPointDistanceToWindow.value / viewPointPos.value.z)
+        unref(objectWidth.value) * viewPointDistanceToWindow.value / viewPointPos.value.z)
     )
 const windowDisplayedHeight = computed(() =>
     Math.floor(
-        unref(params.objectHeight) * viewPointDistanceToWindow.value / viewPointPos.value.z)
+        unref(objectHeight.value) * viewPointDistanceToWindow.value / viewPointPos.value.z)
     )
 
 // Rotation in Universal Cordinate System
@@ -108,7 +111,6 @@ const directionY = ref(params.initialDirectionY)
 // ViewPoint Direction in Universal Cordinate System
 const viewPointDirectionX = inject('viewPointDirectionX')
 const viewPointDirectionY = inject('viewPointDirectionY')
-const viewPointDirectionZ = inject('viewPointDirectionZ')
 
 // Rotation in Window Cordinate System
 function calcWindowRotationData() {
