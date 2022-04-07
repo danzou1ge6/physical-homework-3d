@@ -112,7 +112,12 @@ function updateViewPointAngle({deltaPitch, deltaYaw}) {
 useTrackMouseSwipe(updateViewPointAngle)
 
 function updateViewPointRadius(deltaRadius) {
-    viewPointRadius.value += deltaRadius
+    let newRadius = viewPointRadius.value + deltaRadius
+    if(newRadius > 0){
+        viewPointRadius.value = newRadius
+    }else{
+        viewPointRadius.value = 0
+    }
 }
 useTrackMouseScroll(updateViewPointRadius)
 
@@ -155,8 +160,7 @@ props.baiImgSrcList.forEach(_ => {
 })
 
 // BaiObject Para for Center Object
-const centerBaiParams = computed(() => {
-    return {
+const centerBaiParams = ref({
     initialPos: new Vector3d([0, 0, 0]),
     initialVelocity: new Vector3d([0, 0, 0]),
     objectWidth: imgSize,
@@ -165,7 +169,6 @@ const centerBaiParams = computed(() => {
     initialDirectionY: new Vector3d([0, 1, 0]),
     rotationAxis: new Vector3d([0, 0, 1]),
     rotationAngularSpeed: 0.001
-    }
 })
 
 // Draw Cordinate System on Canvas

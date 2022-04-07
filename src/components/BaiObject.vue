@@ -1,6 +1,7 @@
 <template>
 <div class="bai-object" :style="baiObjStyle">
-    <div :style="props.showEdit ? 'border: solid red 3px;' : ''">
+    <div :style="props.showEdit ? 'border: solid red 3px;' : ''"
+        class="border-container">
         <div :style="rotateStyle">
             <slot></slot>
         </div>
@@ -16,11 +17,11 @@
         <span>Velocity=</span>
         <VectorInput v-model="universeVelocity"></VectorInput><br>
         <span>DirectionX=</span>
-        <VectorInput v-model="directionX" normalized="true"></VectorInput><br>
+        <VectorInput v-model="directionX" normalized></VectorInput><br>
         <span>DirectionY=</span>
-        <VectorInput v-model="directionY" normalized="true"></VectorInput><br>
+        <VectorInput v-model="directionY" normalized></VectorInput><br>
         <span>RotationAxis=</span>
-        <VectorInput v-model="rotationAxis" normalized="true"></VectorInput><br>
+        <VectorInput v-model="rotationAxis" normalized></VectorInput><br>
         <span>RotationAngularSpeed=</span>
         <input v-model="rotationAngularSpeed">
     </div>
@@ -229,7 +230,11 @@ onMounted(() => {animationLoop()})
 
 <style scoped>
 .bai-object {
-    position: fixed
+    position: fixed;
+    display: flex;
+}
+.border-container {
+    align-self: center;
 }
 .param-editor {
     border: solid aliceblue 1px;
