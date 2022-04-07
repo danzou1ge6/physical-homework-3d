@@ -1,10 +1,11 @@
 <template>
     <h1>Index</h1>
+    <h2>{{ msg }}</h2>
     <ul>
         <li v-for="key in Object.keys(index)" :key="key">
-            <span @click="gotoPage(key)" class="link">
+            <a class="link" :href="'/#' + key" target="_blank">
                 {{ key }}
-            </span><br>
+            </a><br>
             <div class="further-info">
                 <span>Center: {{ index[key].center }}</span><br>
                 <span>Outer: </span><br>
@@ -19,29 +20,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
-// Index File Contains URL for Images
-async function getIndex() {
-    let resp = await fetch('/index.json')
-    let index = await resp.json()
-    return index
-}
-
-function gotoPage(key) {
-    location.href = '/#' + key
-    location.reload()
-}
-
-const index = ref([])
-
-onMounted(() => {
-    getIndex()
-        .then(idx => {
-            index.value = idx
-        })
-})
-
+const props = defineProps(['index', 'msg'])
 
 </script>
 
@@ -55,10 +36,13 @@ li {
 a {
     color: aliceblue;
 }
+h2 {
+    color: aliceblue;
+    text-align: center;
+}
 .link:hover {
     color: black;
     background-color: aliceblue;
-    cursor: pointer;
 }
 .further-info {
     display: none;

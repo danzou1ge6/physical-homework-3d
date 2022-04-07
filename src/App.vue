@@ -1,47 +1,46 @@
 <template>
-<DisplayedComponent 
-    :bai-img-src-list="baiImgSrcList"
-    :center-img-src="centerImgSrc">
-</DisplayedComponent>
+<div v-if="displayed == 'bai-canvas'">
+    <BaiCanvas 
+        :bai-img-src-list="baiImgSrcList"
+        :center-img-src="centerImgSrc">
+    </BaiCanvas>
+</div>
+<div v-if="displayed == 'index-display'">
+    <IndexDisplay
+        :index="displayIndex"
+        :msg="indexDisplayMsg"
+    ></IndexDisplay>
+</div>
 </template>
 
 <script setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { ref } from 'vue';
 import BaiCanvas from './components/BaiCanvas.vue';
 import IndexDisplay from './components/IndexDisplay.vue';
+
+import displayIndex from './displayIndex.js'
 
 const baiImgSrcList = ref([])
 const centerImgSrc = ref('')
 
-// Index File Contains URL for Images
-async function getIndex() {
-    let resp = await fetch('/index.json')
-    let index = await resp.json()
-    return index
+const displayed = ref('')
+
+const indexDisplayMsg = ref('')
+
+
+let key = location.hash.slice(1,)
+let srcInfo = displayIndex[key]
+if(srcInfo){
+    centerImgSrc.value = srcInfo.center
+    baiImgSrcList.value = srcInfo.outer
+    displayed.value = 'bai-canvas'
+}else{
+    if(key){
+        indexDisplayMsg.value = `Err: Entry "${key}" not found`
+    }
+    displayed.value = 'index-display'
 }
 
-// Load `BaiCanvas` After Index Resolved
-const DisplayedComponent = defineAsyncComponent(() => {
-    return new Promise((resolve, reject) => {
-        getIndex()
-            .then(index => {
-                let srcInfo = index[location.hash.slice(1,)]
-
-                if(srcInfo){
-                    // Success: Load `BaiCanvas`
-                    centerImgSrc.value = srcInfo.center
-                    baiImgSrcList.value = srcInfo.outer
-                    resolve(BaiCanvas)
-                }else{
-                    resolve(IndexDisplay)
-                }
-            })
-            .catch(err => {
-                console.log(err)
-                reject()
-            })
-    })
-})
 
 </script>
 
