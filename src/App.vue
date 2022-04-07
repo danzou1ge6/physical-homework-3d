@@ -10,36 +10,25 @@ import { defineAsyncComponent, ref } from 'vue';
 import BaiCanvas from './components/BaiCanvas.vue';
 import IndexDisplay from './components/IndexDisplay.vue';
 
+import index from '/displayed/index.json'
+
 const baiImgSrcList = ref([])
 const centerImgSrc = ref('')
 
-// Index File Contains URL for Images
-async function getIndex() {
-    let resp = await fetch('/index.json')
-    let index = await resp.json()
-    return index
-}
 
 // Load `BaiCanvas` After Index Resolved
 const DisplayedComponent = defineAsyncComponent(() => {
     return new Promise((resolve, reject) => {
-        getIndex()
-            .then(index => {
-                let srcInfo = index[location.hash.slice(1,)]
+        let srcInfo = index[location.hash.slice(1,)]
 
-                if(srcInfo){
-                    // Success: Load `BaiCanvas`
-                    centerImgSrc.value = srcInfo.center
-                    baiImgSrcList.value = srcInfo.outer
-                    resolve(BaiCanvas)
-                }else{
-                    resolve(IndexDisplay)
-                }
-            })
-            .catch(err => {
-                console.log(err)
-                reject()
-            })
+        if(srcInfo){
+            // Success: Load `BaiCanvas`
+            centerImgSrc.value = srcInfo.center
+            baiImgSrcList.value = srcInfo.outer
+            resolve(BaiCanvas)
+        }else{
+            resolve(IndexDisplay)
+        }
     })
 })
 

@@ -21,12 +21,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 
-// Index File Contains URL for Images
-async function getIndex() {
-    let resp = await fetch('/index.json')
-    let index = await resp.json()
-    return index
-}
+import idx from '/displayed/index.json';
 
 function gotoPage(key) {
     location.href = '/#' + key
@@ -36,10 +31,7 @@ function gotoPage(key) {
 const index = ref([])
 
 onMounted(() => {
-    getIndex()
-        .then(idx => {
-            index.value = idx
-        })
+    index.value = idx
 })
 
 
