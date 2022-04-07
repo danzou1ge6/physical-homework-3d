@@ -8,7 +8,7 @@
     </div>
 </div>
 <Teleport to="body">
-    <div class="param-editor" v-if="props.showEdit">
+    <div class="param-editor ctl-layer" v-if="props.showEdit">
         <CustomCheckbox v-model="runPhysics">
             Run Physics
         </CustomCheckbox><br>
@@ -47,7 +47,8 @@ const props = defineProps({
     runPhysics: Boolean,
     drawPathPoints: Number,
     params: Object,
-    showEdit: Boolean
+    showEdit: Boolean,
+    baiKey: {}
 })
 let params = props.params
 // initialPos: Vector3d,
@@ -168,6 +169,11 @@ function rotateBaiObj(deltaT) {
     )
 }
 
+// Get z-index
+const zIndexer = inject('zIndexer')
+const zIndex = computed(() => 
+    zIndexer.getZIndex(viewPointPos.value.z, props.baiKey))
+
 // Render Bai
 const baiObjStyle = ref('')
 const rotateStyle = ref('')
@@ -194,6 +200,8 @@ function renderBai() {
             top: ${windowPos.value.y -  windowDisplayedHeight.value / 2}px;
             width: ${windowDisplayedWidth.value}px;
             height: ${windowDisplayedHeight.value}px;
+            z-index: ${zIndex.value};
+            perspective: ${viewPointPos.value.z}
         `
         rotateStyle.value = `
             transform: 

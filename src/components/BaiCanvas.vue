@@ -1,51 +1,55 @@
 <template>
 <h1>汝可识得此阵？</h1>
-<div>
-    <CustomCheckbox v-model="showUniverseAxis">
-        Show Axis
-    </CustomCheckbox>
-    <br>
-    <CustomCheckbox v-model="showViewPointPos">
-        Show View Point Position
-    </CustomCheckbox>
-    <br>
-    <span>gravityConstant=</span><input v-model="gravityConstant">
-    <br>
-    <span>viewPointDistanceToWindow=</span><input v-model="viewPointDistanceToWindow">
-    <br>
-    <CustomCheckbox v-model="showGnerationPanel">
-        Generate Param for Selected Bai Object
-    </CustomCheckbox>
-    <br>
-    <div v-if="showGnerationPanel" class="generation-panel">
-        <ParamGenerationSetting :generation-constants="generationConstants"
-            @generate="generateParams">
-        </ParamGenerationSetting>
+<Teleport to="body">
+    <div class="ctl-layer">
+        <CustomCheckbox v-model="showUniverseAxis">
+            Show Axis
+        </CustomCheckbox>
+        <br>
+        <CustomCheckbox v-model="showViewPointPos">
+            Show View Point Position
+        </CustomCheckbox>
+        <br>
+        <span>gravityConstant=</span><input v-model="gravityConstant">
+        <br>
+        <span>viewPointDistanceToWindow=</span><input v-model="viewPointDistanceToWindow">
+        <br>
+        <CustomCheckbox v-model="showGnerationPanel">
+            Generate Param for Selected Bai Object
+        </CustomCheckbox>
+        <br>
+        <div v-if="showGnerationPanel" class="generation-panel">
+            <ParamGenerationSetting :generation-constants="generationConstants"
+                @generate="generateParams">
+            </ParamGenerationSetting>
+        </div>
+        <div class="param-edit-container">
+            <select v-model="selectedParamEdit">
+                <option value="-1">Select Bai Object to Edit Param</option>
+                <option value="-2">Center</option>
+                <option v-for="(_, i) in baiParams" :key="i" :value="i">
+                    Bai Object {{ i }}
+                </option>
+            </select>
+        </div>
     </div>
-</div>
-<div class="param-edit-container">
-    <select v-model="selectedParamEdit">
-        <option value="-1">Select Bai Object to Edit Param</option>
-        <option value="-2">Center</option>
-        <option v-for="(_, i) in baiParams" :key="i" :value="i">
-            Bai Object {{ i }}
-        </option>
-    </select>
-</div>
+</Teleport>
 <p class="viewpoint-pos-disp" v-if="showViewPointPos">
     Pitch: {{ (viewPointPitch / Math.PI).toFixed(3) }} PI<br>
     Yaw: {{ (viewPointYaw / Math.PI).toFixed(3) }} PI<br>
     Radius: {{ viewPointRadius }} px
 </p>
 <BaiObject :params="centerBaiParams" :run-physics="false"
-    :show-edit="selectedParamEdit == -2">
+    :show-edit="selectedParamEdit == -2"
+    :bai-key="0">
     <a :href="props.centerImgSrc" target="_blank">
         <img :src="props.centerImgSrc">
     </a>
 </BaiObject>
 <div v-for="(baiParam,i) in baiParams" :key="baiObjKey[i]">
     <BaiObject :params="baiParam" :run-physics="true"
-        :show-edit="i == selectedParamEdit">
+        :show-edit="i == selectedParamEdit"
+        :bai-key="baiObjKey[i]">
         <template #default>
             <a :href="props.baiImgSrcList[i]" target="_blank">
                 <img :src="props.baiImgSrcList[i]">
@@ -61,6 +65,7 @@
 import { computed } from '@vue/reactivity';
 import { onMounted, provide, ref, unref } from 'vue';
 
+import { ZIndexSorter } from '../lib/zIndexer.js';
 import { Vector3d, Matrix3D } from '../lib/linalg';
 import { useWindowSize } from '../lib/windowSizeTracking';
 import { useTrackMouseSwipe } from '../lib/mouseSwipe.js'
@@ -194,6 +199,10 @@ function generateParams (setting) {
         })
     }
 }
+
+// Handle z-index for Each Bai Object
+const zIndexer = new ZIndexSorter(1, baiObjKey.value)
+provide('zIndexer', zIndexer)
 
 // BaiObject Para for Center Object
 const centerBaiParams = ref({

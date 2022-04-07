@@ -13,6 +13,18 @@ let index = {
             "SorakadoAi.jpg"
         ]
     },
+    "jie-ge": {
+        center: "JieGe.jpg",
+        outer: [
+            "JieGe.jpg",
+            "JieGe.jpg",
+            "JieGe.jpg",
+            "JieGe.jpg",
+            "JieGe.jpg",
+            "JieGe.jpg",
+            "JieGe.jpg"
+        ]
+    },
     "2022-04-07": {
         center: "JieGe.jpg",
         outer: [
