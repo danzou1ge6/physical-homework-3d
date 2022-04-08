@@ -39,11 +39,25 @@
         </div>
     </div>
 </Teleport>
-<p class="viewpoint-pos-disp" v-if="showViewPointPos">
-    Pitch: {{ (viewPointPitch / Math.PI).toFixed(3) }} PI<br>
-    Yaw: {{ (viewPointYaw / Math.PI).toFixed(3) }} PI<br>
-    Radius: {{ viewPointRadius }} px
-</p>
+<div class="viewpoint-pos-disp" v-if="showViewPointPos">
+    <span>Pitch=</span>
+    <input :value="(viewPointPitch / Math.PI).toFixed(3)"
+        type="number" step="0.1"
+        @input="viewPointPitch = $event.target.value * Math.PI">
+    <span>PI</span><br>
+    <span>Yaw=</span>
+    <input :value="(viewPointYaw / Math.PI).toFixed(3)"
+        type="number" step="0.1"
+        @input="viewPointYaw = $event.target.value * Math.PI">
+    <span>PI</span>
+    <br>
+    <span>Radius=</span>
+    <input :value="viewPointRadius"
+        type="number" step="400"
+        @input="viewPointRadius = $event.target.value">
+    <span>px</span>
+    <br>
+</div>
 <BaiObject :params="centerBaiParams" :run-physics="false"
     :show-edit="selectedParamEdit == -2"
     :bai-key="0">
@@ -317,13 +331,16 @@ img {
     max-height: 100%;
     margin: auto;
 }
-p.viewpoint-pos-disp {
+.viewpoint-pos-disp {
     position: fixed;
-    text-align: center;
+    text-align: right;
     right: 0px;
     top: 0px;
     margin-top: 10px;
     margin-right: 10px;
+}
+.viewpoint-pos-disp input {
+    width: 5em;
 }
 canvas {
     left: 0px;
