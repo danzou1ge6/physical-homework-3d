@@ -1,9 +1,16 @@
 <template>
-<div class="bai-object" :style="baiObjStyle">
-    <div :style="props.showEdit ? 'border: solid red 3px;' : ''"
-        class="border-container">
-        <div :style="rotateStyle">
-            <slot></slot>
+<div class="bai-object" :style="baiObjPosStyle">
+    <span v-if="props.showEdit">
+        v={{ universeVelocity.norm().toFixed(3) }}
+        <br>
+        r={{ universePos.norm().toFixed(3) }}
+    </span>
+    <div class="size-container" :style="baiObjSizeStyle">
+        <div :style="props.showEdit ? 'border: solid red 3px;' : ''"
+            class="border-container">
+            <div :style="baiObjRotateStyle">
+                <slot></slot>
+            </div>
         </div>
     </div>
 </div>
@@ -182,8 +189,9 @@ const zIndex = computed(() =>
     zIndexer.getZIndex(viewPointPos.value.z, props.baiKey))
 
 // Render Bai
-const baiObjStyle = ref('')
-const rotateStyle = ref('')
+const baiObjPosStyle = ref('')
+const baiObjSizeStyle = ref('')
+const baiObjRotateStyle = ref('')
 function renderBai() {
     // Does not Render When Behind the Window
     if(viewPointPos.value.z <= 0){
@@ -202,18 +210,20 @@ function renderBai() {
         let rdeg2 = windowRotationRad2 / Math.PI * 180
         // Build CSS String
         // Transform is Executed From Right to Left. Damn It!
-        baiObjStyle.value = `
+        baiObjPosStyle.value = `
             left: ${windowPos.value.x - windowDisplayedWidth.value / 2}px;
             top: ${windowPos.value.y -  windowDisplayedHeight.value / 2}px;
+            z-index: ${zIndex.value};
+        `
+        baiObjSizeStyle.value = `
             width: ${windowDisplayedWidth.value}px;
             height: ${windowDisplayedHeight.value}px;
-            z-index: ${zIndex.value};
-            perspective: ${viewPointPos.value.z}
         `
-        rotateStyle.value = `
+        baiObjRotateStyle.value = `
             transform: 
                     rotate3d(${ra2x}, ${ra2y}, ${ra2z}, ${-rdeg2}deg)
                     rotate3d(${ra1x}, ${ra1y}, ${ra1z}, ${-rdeg1}deg);
+            perspective: ${viewPointPos.value.z};
         `
     }
 }
