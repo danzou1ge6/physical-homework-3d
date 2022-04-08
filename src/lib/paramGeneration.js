@@ -18,21 +18,39 @@ function randomUnitVector3d() {
 
 
 class RandomParamGenerator {
-    constructor(setting) {
+    constructor(setting, gravityConstant) {
         this.setting = setting
+        this.gravityConstant = gravityConstant
     }
     
     randomPosition() {
         let radius = randomNumber(
             this.setting.minObjRadius,
-            this.setting.minObjRadius)
-        return randomUnitVector3d().scale(radius)
+            this.setting.maxObjRadius)
+        let direction = randomUnitVector3d()
+
+        // if Force in a Plane
+        if(!(this.setting.planeNormalVector === null)){
+            direction = direction.minus(
+                this.setting.planeNormalVector.scale(
+                    direction.dot(this.setting.planeNormalVector)
+                )
+            ).normalized()
+        }
+        return direction.scale(radius)
     }
 
     // params:
     //     r: Vector3d
     randomVelocity(r) {
-        let m = randomUnitVector3d()
+        let m
+        if(this.setting.planeNormalVector === null){
+            m = randomUnitVector3d()
+        }else{
+            m = this.setting.planeNormalVector
+        }
+
+        // This way `n`⊥`r`
         let n = m.cross(r).normalized()
         let a = randomNumber(
             -this.setting.tanVelocityFromRadius,
@@ -40,7 +58,7 @@ class RandomParamGenerator {
         let v = n.add(r.normalized().scale(a)).normalized()
 
         let circalSpeed = Math.sqrt(
-            this.setting.gravityConstant / r.norm()
+            this.gravityConstant / r.norm()
         )
 
         return v.scale(randomNumber(
@@ -69,8 +87,8 @@ class RandomParamGenerator {
     }
 }
 
-function randomParam() {
-    return new RandomParamGenerator(generationConstants)
+function randomParam(gravityConstant) {
+    return new RandomParamGenerator(generationConstants, gravityConstant)
             .randomParam()
 }
 

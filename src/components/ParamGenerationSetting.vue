@@ -1,6 +1,11 @@
 <template>
-<div v-for="(key, i) in Object.keys(setting)" :key="i">
+<div v-for="(key, i) in scalerKeys" :key="i">
     <span>{{ key }}=</span><input v-model="setting[key]">
+    <br>
+</div>
+<div v-for="(key, i) in normVectorKeys" :key="i">
+    <span>{{ key }}=</span>
+    <VectorInput v-model="setting[key]"></VectorInput>
     <br>
 </div>
 <button @click="submit" 
@@ -19,9 +24,26 @@
 <script setup>
 import { computed } from '@vue/reactivity';
 import { ref } from 'vue';
+import VectorInput from './VectorInput.vue';
 
 const props = defineProps(['generationConstants', 'selected'])
 const emit = defineEmits(['generate', 'add'])
+
+// Settings That are Scalers
+const scalerKeys = [
+    'minObjRadius',
+    'maxObjRadius',
+    'tanVelocityFromRadius',
+    'minSpeedCoefficient',
+    'maxSpeedCoefficient',
+    'minRotationAngularSpeed',
+    'maxRotationAngularSpeed',
+    'imgSize']
+
+// Settings That are Normal Vectors
+const normVectorKeys = [
+    'planeNormalVector'
+]
 
 const setting = ref(props.generationConstants)
 const imageURL = ref('/physical-homework-3d/SorakadoAi.jpg')
@@ -37,14 +59,14 @@ const generationTarget = computed(() => {
 })
 
 function submit() {
-    Object.keys(setting.value).forEach(k => {
+    scalerKeys.forEach(k => {
         setting.value[k] = Number(setting.value[k])
     })
     emit('generate', setting.value)
 }
 
 function add() {
-    Object.keys(setting.value).forEach(k => {
+    scalerKeys.forEach(k => {
         setting.value[k] = Number(setting.value[k])
     })
     emit('add', setting.value, imageURL.value)

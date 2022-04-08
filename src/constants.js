@@ -14,6 +14,6 @@ export const generationConstants = {
     maxSpeedCoefficient: 1.01,
     minRotationAngularSpeed: 0,
     maxRotationAngularSpeed: 0.01,
-    gravityConstant: defaultGravityConstant,
+    planeNormalVector: null,
     imgSize: 800
 }

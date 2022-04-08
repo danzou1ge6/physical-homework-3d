@@ -21,7 +21,8 @@
         </CustomCheckbox>
         <br>
         <div v-if="showGnerationPanel" class="generation-panel">
-            <ParamGenerationSetting :generation-constants="generationConstants"
+            <ParamGenerationSetting 
+                :generation-constants="generationConstants"
                 @generate="generateParams"
                 @add="addBaiObj"
                 :selected="selectedParamEdit">
@@ -182,7 +183,7 @@ provide('gravityConstant', gravityConstant)
 // BaiObject Params
 const baiParams = ref([])
 props.baiImgSrcList.forEach(_ => {
-    baiParams.value.push(randomParam())
+    baiParams.value.push(randomParam(gravityConstant.value))
 })
 
 // Force Refresh a Bai Object: Vue Renders Compoenent on `key` Change
@@ -194,7 +195,7 @@ function refreshBaiObj(i) {
 
 const showGnerationPanel = ref(false)
 function generateParams (setting) {
-    let generator = new RandomParamGenerator(setting)
+    let generator = new RandomParamGenerator(setting, gravityConstant.value)
     if(selectedParamEdit.value >= 0){
         baiParams.value[selectedParamEdit.value] = 
            generator.randomParam()
@@ -210,7 +211,7 @@ function generateParams (setting) {
 
 // Add new Bai Object
 function addBaiObj(setting, imageURL) {
-    let generator = new RandomParamGenerator(setting)
+    let generator = new RandomParamGenerator(setting, gravityConstant.value)
     props.baiImgSrcList.push(imageURL)
     baiObjKey.value.push(Math.floor(Math.random() * 100000000))
     baiParams.value.push(generator.randomParam())
