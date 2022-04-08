@@ -1,6 +1,7 @@
 class Vector3d {
     constructor(list1d) {
         this.data = list1d
+        this.normValue = null
     }
     get x() {return this.data[0]}
     get y() {return this.data[1]}
@@ -24,7 +25,10 @@ class Vector3d {
         return new Vector3d(this.data.map((v, i) => v - vec.data[i]))
     }
     norm() {
-        return Math.sqrt(this.data.reduce((s, v) => s + v * v, 0))
+        if(!this.normValue){
+            this.normValue = Math.sqrt(this.data.reduce((s, v) => s + v * v, 0))
+        }
+        return this.normValue
     }
     normalized() {
         return this.scale(1 / this.norm())
