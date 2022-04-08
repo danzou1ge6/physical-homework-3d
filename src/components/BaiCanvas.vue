@@ -17,12 +17,14 @@
         <span>viewPointDistanceToWindow=</span><input v-model="viewPointDistanceToWindow">
         <br>
         <CustomCheckbox v-model="showGnerationPanel">
-            Generate Param for Selected Bai Object
+            Generate Random Paramameter
         </CustomCheckbox>
         <br>
         <div v-if="showGnerationPanel" class="generation-panel">
             <ParamGenerationSetting :generation-constants="generationConstants"
-                @generate="generateParams">
+                @generate="generateParams"
+                @add="addBaiObj"
+                :selected="selectedParamEdit">
             </ParamGenerationSetting>
         </div>
         <div class="param-edit-container">
@@ -30,7 +32,7 @@
                 <option value="-1">Select Bai Object to Edit Param</option>
                 <option value="-2">Center</option>
                 <option v-for="(_, i) in baiParams" :key="i" :value="i">
-                    Bai Object {{ i }}
+                    Bai Object {{ i }} (Key={{ baiObjKey[i] }})
                 </option>
             </select>
         </div>
@@ -51,7 +53,8 @@
 <div v-for="(baiParam,i) in baiParams" :key="baiObjKey[i]">
     <BaiObject :params="baiParam" :run-physics="true"
         :show-edit="i == selectedParamEdit"
-        :bai-key="baiObjKey[i]">
+        :bai-key="baiObjKey[i]"
+        @destroy="destroyBaiObj">
         <template #default>
             <a :href="props.baiImgSrcList[i]" target="_blank">
                 <img :src="props.baiImgSrcList[i]">
@@ -205,6 +208,15 @@ function generateParams (setting) {
     }
 }
 
+// Add new Bai Object
+function addBaiObj(setting, imageURL) {
+    let generator = new RandomParamGenerator(setting)
+    props.baiImgSrcList.push(imageURL)
+    baiObjKey.value.push(Math.floor(Math.random() * 100000000))
+    baiParams.value.push(generator.randomParam())
+    
+}
+
 // Animation Speed
 const deltaT = ref(initialDeltaT)
 provide('deltaT', deltaT)
@@ -224,6 +236,16 @@ const centerBaiParams = ref({
     rotationAxis: new Vector3d([0, 0, 1]),
     rotationAngularSpeed: 0.001
 })
+
+// Desroy Bai Object
+function destroyBaiObj(baiKey) {
+    let idx = baiObjKey.value.indexOf(baiKey)
+    if(idx != -1){
+        baiParams.value.splice(idx, 1)
+        props.baiImgSrcList.splice(idx, 1)
+        baiObjKey.value.splice(idx, 1)
+    }
+}
 
 // Draw Cordinate System on Canvas
 const showUniverseAxis = ref(true)

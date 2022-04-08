@@ -27,9 +27,13 @@
         <span>width=</span>
         <input v-model="objectWidth"><br>
         <span>height=</span>
-        <input v-model="objectHeight">
+        <input v-model="objectHeight"><br>
+        <button @click="$emit('destroy', props.baiKey)">Destroy</button>
     </div>
     <div class="bai-object-preview" v-if="props.showEdit">
+        <slot></slot>
+    </div>
+    <div class="bai-object-peek">
         <slot></slot>
     </div>
 </Teleport>
@@ -41,6 +45,9 @@ import { inject, onMounted, ref, unref } from 'vue';
 
 import VectorInput from './VectorInput.vue'
 import CustomCheckbox from './CustomCheckbox.vue'
+
+// Destory
+const emit = defineEmits(['destroy'])
 
 // Initial Position and Velocity
 const props = defineProps({
@@ -252,11 +259,16 @@ onMounted(() => {animationLoop()})
     max-width: 100px;
     max-height: 100px;
 }
-.bai-object-preview:hover {
+.bai-object-peek {
+    display: none;
+    z-index: 999;
+}
+.bai-object-preview:hover~.bai-object-peek {
     max-width: 80%;
-    max-height: 80vh;
+    max-height: 100vh;
     position: fixed;
-    left: 10px;
+    display: block;
+    right: 10px;
     top: 10px
 }
 </style>
