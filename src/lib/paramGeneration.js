@@ -37,11 +37,15 @@ class RandomParamGenerator {
         let a = randomNumber(
             -this.setting.tanVelocityFromRadius,
             this.setting.tanVelocityFromRadius)
-        let v = n.add(r.normalized().scale(a))
+        let v = n.add(r.normalized().scale(a)).normalized()
+
+        let circalSpeed = Math.sqrt(
+            this.setting.gravityConstant / r.norm()
+        )
 
         return v.scale(randomNumber(
-            this.setting.minSpeed,
-            this.setting.maxSpeed))
+            circalSpeed * this.setting.minSpeedCoefficient,
+            circalSpeed * this.setting.maxSpeedCoefficient))
     }
 
     randomParam() {

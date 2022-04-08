@@ -154,7 +154,7 @@ const gravityConstant = inject('gravityConstant')
 function updatePhysics(deltaT) {
     universeVelocity.value = universeVelocity.value.minus(
         universePos.value.scale(gravityConstant.value * deltaT
-                                / universePos.value.norm())
+                                / universePos.value.norm() ** 3)
     )
     universePos.value = universePos.value.add(
         universeVelocity.value.scale(deltaT)
