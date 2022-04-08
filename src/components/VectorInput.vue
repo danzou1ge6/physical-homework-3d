@@ -55,7 +55,16 @@ function submit() {
     let v = new Vector3d([x, y, z])
 
     // In Case of Rotation Axis, etc.
-    if(props.normalized){v = v.normalized()}
+    if(props.normalized){
+        // Norm == 0 is not Accepted
+        if(x == 0 && y == 0 && z == 0){
+            emit('update:modelValue', null)
+            // Clear Input
+            mx.value = my.value = mz.value = ''
+            return
+        }
+        v = v.normalized()
+    }
 
     emit('update:modelValue', v)
 

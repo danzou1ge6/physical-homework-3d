@@ -195,7 +195,7 @@ const baiObjRotateStyle = ref('')
 function renderBai() {
     // Does not Render When Behind the Window
     if(viewPointPos.value.z <= 0){
-        baiObjStyle.value = 'display: none'
+        baiObjPosStyle.value = 'display: none'
     }else{
         // Format Rotation Data
         let {windowRotationAxis1, windowRotationRad1,

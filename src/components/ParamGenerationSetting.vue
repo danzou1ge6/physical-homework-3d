@@ -5,7 +5,7 @@
 </div>
 <div v-for="(key, i) in normVectorKeys" :key="i">
     <span>{{ key }}=</span>
-    <VectorInput v-model="setting[key]"></VectorInput>
+    <VectorInput v-model="setting[key]" normalized></VectorInput>
     <br>
 </div>
 <button @click="submit" 
