@@ -33,7 +33,7 @@
     <div class="bai-object-preview" v-if="props.showEdit">
         <slot></slot>
     </div>
-    <div class="bai-object-peek">
+    <div class="bai-object-peek" v-if="props.showEdit">
         <slot></slot>
     </div>
 </Teleport>

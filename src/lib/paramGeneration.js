@@ -31,7 +31,6 @@ class RandomParamGenerator {
 
     // params:
     //     r: Vector3d
-    //     gracityConstant: Number
     randomVelocity(r) {
         let m = randomUnitVector3d()
         let n = m.cross(r).normalized()

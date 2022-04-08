@@ -8,12 +8,11 @@ export const initialViewPointRadius = 4000
 export const initialDeltaT = 20
 export const generationConstants = {
     minObjRadius: 3000,
-    maxObjRadius: 8000,
-    tanVelocityFromRadius: 0.1,
-    minSpeed: 1.8,
-    maxSpeed: 2,
+    maxObjRadius: 3000,
+    tanVelocityFromRadius: 1,
+    minSpeed: 2.5,
+    maxSpeed: 3,
     minRotationAngularSpeed: 0,
     maxRotationAngularSpeed: 0.01,
-    gravityConstant: defaultGravityConstant,
     imgSize: 800
 }
