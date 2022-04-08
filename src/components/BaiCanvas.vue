@@ -10,6 +10,8 @@
             Show View Point Position
         </CustomCheckbox>
         <br>
+        <span>deltaT=</span><input v-model="deltaT">
+        <br>
         <span>gravityConstant=</span><input v-model="gravityConstant">
         <br>
         <span>viewPointDistanceToWindow=</span><input v-model="viewPointDistanceToWindow">
@@ -63,19 +65,22 @@
 
 <script setup>
 import { computed } from '@vue/reactivity';
-import { onMounted, provide, ref, unref } from 'vue';
+import { onMounted, provide, ref } from 'vue';
 
 import { ZIndexSorter } from '../lib/zIndexer.js';
 import { Vector3d, Matrix3D } from '../lib/linalg';
 import { useWindowSize } from '../lib/windowSizeTracking';
 import { useTrackMouseSwipe } from '../lib/mouseSwipe.js'
 import { useTrackMouseScroll } from '../lib/mouseScroll.js'
-import { defaultGravityConstant,
-         defaultViewPointDistanceToWindow, 
-generationConstants, 
-initialViewPointPitch, 
-initialViewPointRadius,
-initialViewPointYaw} from '../constants.js';
+import { 
+    defaultGravityConstant,
+    defaultViewPointDistanceToWindow, 
+    generationConstants, 
+    initialViewPointPitch, 
+    initialViewPointRadius,
+    initialViewPointYaw,
+    initialDeltaT
+} from '../constants.js';
 import { randomParam, RandomParamGenerator } from '../lib/paramGeneration.js'
 
 import BaiObject from './BaiObject.vue'
@@ -177,7 +182,7 @@ props.baiImgSrcList.forEach(_ => {
     baiParams.value.push(randomParam())
 })
 
-// Force Refresh a Bai Object: Vue Renders Compoenent on Key Change
+// Force Refresh a Bai Object: Vue Renders Compoenent on `key` Change
 const baiObjKey = ref(props.baiImgSrcList.map(_ => 
     Math.floor(Math.random() * 100000000)))
 function refreshBaiObj(i) {
@@ -200,8 +205,12 @@ function generateParams (setting) {
     }
 }
 
+// Animation Speed
+const deltaT = ref(initialDeltaT)
+provide('deltaT', deltaT)
+
 // Handle z-index for Each Bai Object
-const zIndexer = new ZIndexSorter(1, baiObjKey.value)
+const zIndexer = new ZIndexSorter(1, baiObjKey.value, baiParams.value.length)
 provide('zIndexer', zIndexer)
 
 // BaiObject Para for Center Object
@@ -245,7 +254,8 @@ function drawUniverseBasisAxis() {
         let label = ['X', 'Y', 'Z'];
         [universeBasisX, universeBasisY, universeBasisZ]
         .forEach((basis, i) => {
-            let draw = universePosToWindow(basis.value.scale(2 * generationConstants.imgSize))
+            let drawLength = 2 * generationConstants.imgSize
+            let draw = universePosToWindow(basis.value.scale(drawLength))
             
             cordCanvasContext.beginPath()
             cordCanvasContext.strokeStyle = "rgb(255,255,255)"
@@ -254,7 +264,8 @@ function drawUniverseBasisAxis() {
             cordCanvasContext.closePath()
             cordCanvasContext.stroke()
 
-            cordCanvasContext.strokeText(label[i], draw.x, draw.y)
+            cordCanvasContext.strokeText(`${label[i]} ${drawLength}`
+                , draw.x, draw.y)
         })
     }
 

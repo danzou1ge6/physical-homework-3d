@@ -212,23 +212,21 @@ function renderBai() {
 }
 
 // Animation Loop
-let timestampOfLastFrame = null
+const deltaT = inject('deltaT')
+
 function animationLoop(timestamp) {
-    if(timestampOfLastFrame){
-        let deltaT = timestamp - timestampOfLastFrame
 
-        if(runPhysics.value){
-            updatePhysics(deltaT)
-        }
-
-        if(params.rotationAngularSpeed){
-            rotateBaiObj(deltaT)
-        }
-
-        renderBai()
-        
+    if(runPhysics.value){
+        updatePhysics(deltaT.value)
     }
-    timestampOfLastFrame = timestamp
+
+    if(params.rotationAngularSpeed){
+        rotateBaiObj(deltaT.value)
+    }
+
+    renderBai()
+        
+    
 
     requestAnimationFrame(animationLoop)
 }

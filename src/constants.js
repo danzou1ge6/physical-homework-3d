@@ -5,6 +5,7 @@ export const defaultViewPointDistanceToWindow = 800
 export const initialViewPointPitch = Math.PI / 4
 export const initialViewPointYaw = 0
 export const initialViewPointRadius = 4000
+export const initialDeltaT = 20
 export const generationConstants = {
     minObjRadius: 3000,
     maxObjRadius: 8000,
