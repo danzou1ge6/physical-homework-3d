@@ -38,26 +38,26 @@
             </select>
         </div>
     </div>
+    <div class="viewpoint-pos-disp" v-if="showViewPointPos">
+        <span>Pitch=</span>
+        <input :value="(viewPointPitch / Math.PI).toFixed(3)"
+            type="number" step="0.1"
+            @input="viewPointPitch = $event.target.value * Math.PI">
+        <span>PI</span><br>
+        <span>Yaw=</span>
+        <input :value="(viewPointYaw / Math.PI).toFixed(3)"
+            type="number" step="0.1"
+            @input="viewPointYaw = $event.target.value * Math.PI">
+        <span>PI</span>
+        <br>
+        <span>Radius=</span>
+        <input :value="viewPointRadius"
+            type="number" step="400"
+            @input="viewPointRadius = $event.target.value">
+        <span>px</span>
+        <br>
+    </div>
 </Teleport>
-<div class="viewpoint-pos-disp" v-if="showViewPointPos">
-    <span>Pitch=</span>
-    <input :value="(viewPointPitch / Math.PI).toFixed(3)"
-        type="number" step="0.1"
-        @input="viewPointPitch = $event.target.value * Math.PI">
-    <span>PI</span><br>
-    <span>Yaw=</span>
-    <input :value="(viewPointYaw / Math.PI).toFixed(3)"
-        type="number" step="0.1"
-        @input="viewPointYaw = $event.target.value * Math.PI">
-    <span>PI</span>
-    <br>
-    <span>Radius=</span>
-    <input :value="viewPointRadius"
-        type="number" step="400"
-        @input="viewPointRadius = $event.target.value">
-    <span>px</span>
-    <br>
-</div>
 <BaiObject :params="centerBaiParams" :run-physics="false"
     :show-edit="selectedParamEdit == -2"
     :bai-key="0">
@@ -196,8 +196,11 @@ provide('gravityConstant', gravityConstant)
 
 // BaiObject Params
 const baiParams = ref([])
-props.baiImgSrcList.forEach(_ => {
-    baiParams.value.push(randomParam(gravityConstant.value))
+
+onMounted(() => {
+    props.baiImgSrcList.forEach(_ => {
+        baiParams.value.push(randomParam(gravityConstant.value))
+    })
 })
 
 // Force Refresh a Bai Object: Vue Renders Compoenent on `key` Change
@@ -338,6 +341,7 @@ img {
     top: 0px;
     margin-top: 10px;
     margin-right: 10px;
+    z-index: 999;
 }
 .viewpoint-pos-disp input {
     width: 5em;

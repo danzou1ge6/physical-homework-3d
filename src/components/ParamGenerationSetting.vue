@@ -16,7 +16,12 @@
     <input v-model="imageURL"
         class="imgurl-inp"
         placeholder="/physical-homework-3d/SorakadoAi.jpg">
-    <br>
+</div>
+<div class="imgurl-inp-container">
+    <span>Or Upload Image: </span>
+    <input type="file" 
+        class="imgurl-inp"
+        @change="uploadImg">
 </div>
 <button @click="add">Add New</button>
 </template>
@@ -57,6 +62,10 @@ const generationTarget = computed(() => {
         return `Generate for Bai Object ${props.selected}`
     }
 })
+
+function uploadImg(e) {
+    imageURL.value = URL.createObjectURL(e.target.files[0])
+}
 
 function submit() {
     scalerKeys.forEach(k => {

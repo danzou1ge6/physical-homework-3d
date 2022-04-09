@@ -1,10 +1,13 @@
 <template>
     <span>[</span>
     <input :placeholder="placeholder.x" 
+        :style="`width: ${props.displayedDigits+3}em`"
         v-model="mx"><span>,</span>
     <input :placeholder="placeholder.y"
+        :style="`width: ${props.displayedDigits+3}em`"
         v-model="my"><span>,</span>
     <input :placeholder="placeholder.z"
+        :style="`width: ${props.displayedDigits+3}em`"
         v-model="mz">
     <span>]</span>
     <button @click="submit">Set</button>
