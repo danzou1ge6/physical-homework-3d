@@ -39,46 +39,37 @@
         </div>
     </div>
     <div class="viewpoint-pos-disp" v-if="showViewPointPos">
-        <span>Pitch=</span>
-        <input :value="(viewPointPitch / Math.PI).toFixed(3)"
-            type="number" step="0.1"
-            @input="viewPointPitch = $event.target.value * Math.PI">
-        <span>PI</span><br>
-        <span>Yaw=</span>
-        <input :value="(viewPointYaw / Math.PI).toFixed(3)"
-            type="number" step="0.1"
-            @input="viewPointYaw = $event.target.value * Math.PI">
-        <span>PI</span>
+        <span>Pitch={{ (viewPointPitch / Math.PI).toFixed(3) }} PI</span>
         <br>
-        <span>Radius=</span>
-        <input :value="viewPointRadius"
-            type="number" step="400"
-            @input="viewPointRadius = $event.target.value">
-        <span>px</span>
+        <span>Yaw={{ (viewPointYaw / Math.PI).toFixed(3) }} PI</span>
+        <br>
+        <span>Radius= {{ viewPointRadius.toFixed(0) }} px</span>
         <br>
     </div>
 </Teleport>
-<BaiObject :params="centerBaiParams" :run-physics="false"
-    :show-edit="selectedParamEdit == -2"
-    :bai-key="0">
-    <a :href="props.centerImgSrc" target="_blank">
-        <img :src="props.centerImgSrc">
-    </a>
-</BaiObject>
-<div v-for="(baiParam,i) in baiParams" :key="baiObjKey[i]">
-    <BaiObject :params="baiParam" :run-physics="true"
-        :show-edit="i == selectedParamEdit"
-        :bai-key="baiObjKey[i]"
-        @destroy="destroyBaiObj">
-        <template #default>
-            <a :href="props.baiImgSrcList[i]" target="_blank">
-                <img :src="props.baiImgSrcList[i]">
-            </a>
-        </template>
+<div class="bai-objects-container" ref="baiObjectsContainer">
+    <BaiObject :params="centerBaiParams" :run-physics="false"
+        :show-edit="selectedParamEdit == -2"
+        :bai-key="0">
+        <a :href="props.centerImgSrc" target="_blank">
+            <img :src="props.centerImgSrc">
+        </a>
     </BaiObject>
+    <div v-for="(baiParam,i) in baiParams" :key="baiObjKey[i]">
+        <BaiObject :params="baiParam" :run-physics="true"
+            :show-edit="i == selectedParamEdit"
+            :bai-key="baiObjKey[i]"
+            @destroy="destroyBaiObj">
+            <template #default>
+                <a :href="props.baiImgSrcList[i]" target="_blank">
+                    <img :src="props.baiImgSrcList[i]">
+                </a>
+            </template>
+        </BaiObject>
+    </div>
+    <canvas ref="cordCanvas" :width="windowWidth" :height="windowHeight"
+        v-if="showUniverseAxis"></canvas>
 </div>
-<canvas ref="cordCanvas" :width="windowWidth" :height="windowHeight"
-    v-if="showUniverseAxis"></canvas>
 </template>
 
 <script setup>
@@ -122,6 +113,9 @@ provide('universeBasisX', universeBasisX)
 provide('universeBasisY', universeBasisY)
 provide('universeBasisZ', universeBasisZ)
 
+// Ref for Bai Objects Container to track Mouse and Touch
+const baiObjectsContainer = ref(null)
+
 // Cordinate of ViewPoint in Universal Cordinate System
 const viewPointYaw = ref(initialViewPointYaw)
 const viewPointPitch = ref(initialViewPointPitch)
@@ -150,7 +144,7 @@ function updateViewPointAngle({deltaPitch, deltaYaw}) {
     }
     viewPointYaw.value += deltaYaw
 }
-useTrackMouseSwipe(updateViewPointAngle)
+useTrackMouseSwipe(updateViewPointAngle, baiObjectsContainer)
 
 function updateViewPointRadius(deltaRadius) {
     let newRadius = viewPointRadius.value + deltaRadius
@@ -160,7 +154,7 @@ function updateViewPointRadius(deltaRadius) {
         viewPointRadius.value = 0
     }
 }
-useTrackMouseScroll(updateViewPointRadius)
+useTrackMouseScroll(updateViewPointRadius, baiObjectsContainer)
 
 // Direction of ViewPoint in Universal Cordinate System
 const viewPointDirectionX = computed(() =>
@@ -329,6 +323,9 @@ onMounted(() => {animationLoop()})
 </script>
 
 <style scoped>
+.bai-objects-container {
+    touch-action: none;
+}
 img {
     max-width: 100%;
     max-height: 100%;
