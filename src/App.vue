@@ -86,8 +86,4 @@ select {
     background-color: rgba(0,0,0,0);
     color: aliceblue;
 }
-.ctl-layer {
-    z-index: 999;
-    position: relative;
-}
 </style>

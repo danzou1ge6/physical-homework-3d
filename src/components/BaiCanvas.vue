@@ -38,6 +38,7 @@
             </select>
         </div>
     </div>
+    <br>
     <div class="viewpoint-pos-disp" v-if="showViewPointPos">
         <span>Pitch={{ (viewPointPitch / Math.PI).toFixed(3) }} PI</span>
         <br>
@@ -325,6 +326,11 @@ onMounted(() => {animationLoop()})
 <style scoped>
 .bai-objects-container {
     touch-action: none;
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    left: 0px;
+    top: 0px;
 }
 img {
     max-width: 100%;
@@ -353,6 +359,11 @@ canvas {
 }
 .generation-panel {
     border: solid aliceblue 1px;
+    display: inline-block;
+}
+.ctl-layer {
+    z-index: 999;
+    position: relative;
     display: inline-block;
 }
 </style>
