@@ -47,6 +47,18 @@ let index = {
             "JieGe.jpg",
             "JieGe.jpg"
         ]
+    },
+    "2022-04-12": {
+        center: "JieGe.jpg",
+        outer: [
+            "2022-04-12/1.png",
+            "2022-04-12/2.png",
+            "2022-04-12/3.png",
+            "2022-04-12/4.png",
+            "JieGe.jpg",
+            "JieGe.jpg",
+            "JieGe.jpg"
+        ]
     }
 }
 
