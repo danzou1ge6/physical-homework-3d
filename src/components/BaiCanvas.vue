@@ -53,7 +53,12 @@
         :show-edit="selectedParamEdit == -2"
         :bai-key="0">
         <a :href="props.centerImgSrc" target="_blank">
-            <img :src="props.centerImgSrc">
+            <div v-if="props.centerImgSrc.endsWith('.mp4')">
+                <video :src="props.centerImgSrc" autoplay></video>
+            </div>
+            <div v-if="props.centerImgSrc.endsWith('.jpg') || props.centerImgSrc.endsWith('.png')">
+                <img :src="props.centerImgSrc">
+            </div>
         </a>
     </BaiObject>
     <div v-for="(baiParam,i) in baiParams" :key="baiObjKey[i]">
@@ -63,7 +68,12 @@
             @destroy="destroyBaiObj">
             <template #default>
                 <a :href="props.baiImgSrcList[i]" target="_blank">
-                    <img :src="props.baiImgSrcList[i]">
+                    <div v-if="props.baiImgSrcList[i].endsWith('.mp4')">
+                        <video :src="props.baiImgSrcList[i]" autoplay></video>
+                    </div>
+                    <div v-if="props.baiImgSrcList[i].endsWith('.jpg') || props.baiImgSrcList[i].endsWith('.png')">
+                        <img :src="props.baiImgSrcList[i]">
+                    </div>
                 </a>
             </template>
         </BaiObject>
@@ -331,6 +341,11 @@ onMounted(() => {animationLoop()})
     height: 100vh;
     left: 0px;
     top: 0px;
+}
+video {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
 }
 img {
     max-width: 100%;

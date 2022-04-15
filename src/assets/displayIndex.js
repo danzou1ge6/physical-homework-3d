@@ -1,6 +1,16 @@
 const BASE_URL = import.meta.env.BASE_URL
 
 let index = {
+    "neko-shizuku": {
+        center: 'NekoShizuku.mp4',
+        outer: [
+            'NekoShizuku.mp4',
+            'NekoShizuku.mp4',
+            'NekoShizuku.mp4',
+            'NekoShizuku.mp4',
+            'NekoShizuku.mp4'
+        ]
+    },
     "sorakado-ai": {
         center: "SorakadoAi.jpg",
         outer: [
@@ -58,6 +68,21 @@ let index = {
             "JieGe.jpg",
             "JieGe.jpg",
             "JieGe.jpg"
+        ]
+    },
+    "2022-04-15": {
+        center: "JieGe.jpg",
+        outer: [
+            "2022-04-15/1.png",
+            "2022-04-15/2.png",
+            "PureReasonHamCountry.mp4",
+            "PureReasonHamCountry.mp4",
+            "PureReasonHamCountry.mp4",
+            "PureReasonHamCountry.mp4",
+            'NekoShizuku.mp4',
+            'NekoShizuku.mp4',
+            "JieGe.jpg",
+            "JieGe.jpg",
         ]
     }
 }
